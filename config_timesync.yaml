@@ -1,0 +1,6 @@
+# Timezone of the PC/Oscilloscope that recorded the experiment.
+# TL strings in the raw CSV are wall-clock times from that machine.
+# Required when parsing or replaying on a machine in a different timezone.
+# Texas (Central): America/Chicago
+# California (Pacific): America/Los_Angeles
+recording_timezone: America/Chicago
