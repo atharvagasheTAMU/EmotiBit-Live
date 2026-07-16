@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
 
+from run_utils import find_latest_run
+
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
 
 STREAMS = {
@@ -23,15 +25,6 @@ STREAMS = {
 def load_config(path: Path = CONFIG_PATH) -> dict:
     with path.open(encoding="utf-8") as handle:
         return yaml.safe_load(handle)
-
-
-def find_latest_run(data_dir: Path) -> Path | None:
-    runs = sorted(
-        (p for p in data_dir.iterdir() if p.is_dir() and p.name.isdigit()),
-        key=lambda p: p.name,
-        reverse=True,
-    )
-    return runs[0] if runs else None
 
 
 def plot_raw_streams(raw_dir: Path, run_dir: Path, streams: dict[str, dict]) -> None:
@@ -68,7 +61,7 @@ def main() -> None:
         "--run-dir",
         type=Path,
         default=None,
-        help="Run folder, e.g. data/1783020361 (defaults to latest under data/)",
+        help="Run folder, e.g. data/2026_07_15_1783020361 (defaults to latest under data/)",
     )
     parser.add_argument(
         "--streams",

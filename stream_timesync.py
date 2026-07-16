@@ -13,6 +13,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+from run_utils import build_run_folder_name
 from signal_utils import FEATURE_COLUMNS, extract_window_features
 from timesync import (
     TimesyncTracker,
@@ -69,12 +70,6 @@ def buffer_to_df(buffer: deque, start: float, end: float) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def choose_run_id(ts_map, fallback: int) -> str:
-    if ts_map.is_ready:
-        return str(int(ts_map.c0))
-    return str(fallback)
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Stream EmotiBit UDP data with unix timestamps from recording timesyncs.",
@@ -89,7 +84,7 @@ def main() -> None:
         "--recording-tz",
         default=None,
         help="IANA timezone where data was recorded (e.g. America/Chicago for Texas). "
-        "Defaults to config_timesync.yaml.",
+        "Defaults to config.yaml timesync.recording_timezone.",
     )
     args = parser.parse_args()
 
@@ -113,7 +108,8 @@ def main() -> None:
         print("No --timesync-csv provided; building map from incoming RD/TL/AK packets.")
 
     data_dir = Path(stream_cfg.get("data_dir", "data"))
-    run_id = choose_run_id(tracker.ts_map, int(time.time()))
+    unix_ts = int(tracker.ts_map.c0) if tracker.ts_map.is_ready else int(time.time())
+    run_id = build_run_folder_name(unix_ts, stream_cfg.get("run_tag", "") or "")
     run_dir = data_dir / run_id
     raw_dir = run_dir / "raw"
     processed_dir = run_dir / "processed"

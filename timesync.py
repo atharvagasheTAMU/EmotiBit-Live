@@ -252,14 +252,14 @@ def load_recording_timezone(
 ) -> str | None:
     if override:
         return override
-    path = config_path or Path(__file__).parent / "config_timesync.yaml"
+    path = config_path or Path(__file__).parent / "config.yaml"
     if not path.exists():
         return None
     import yaml
 
     with path.open(encoding="utf-8") as handle:
         cfg = yaml.safe_load(handle) or {}
-    tz = cfg.get("recording_timezone")
+    tz = (cfg.get("timesync") or {}).get("recording_timezone")
     return str(tz) if tz else None
 
 
@@ -325,7 +325,7 @@ if __name__ == "__main__":
         "--recording-tz",
         default=None,
         help="IANA timezone where data was recorded (e.g. America/Chicago). "
-        "Defaults to config_timesync.yaml.",
+        "Defaults to config.yaml timesync.recording_timezone.",
     )
     args = cli.parse_args()
 

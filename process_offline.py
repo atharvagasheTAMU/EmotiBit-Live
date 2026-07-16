@@ -10,6 +10,7 @@ import pandas as pd
 import yaml
 from sklearn.preprocessing import StandardScaler
 
+from run_utils import find_latest_run
 from signal_utils import FEATURE_COLUMNS, extract_window_features, filter_BVP, filter_EDA
 
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -74,18 +75,9 @@ def prepare_streams(ppg, eda, min_reliability, edge_buffer_sec):
     return ppg_filtered, scr, scl, total_time, session_start_unix
 
 
-def find_latest_run(data_dir: Path) -> Path | None:
-    runs = sorted(
-        (p for p in data_dir.iterdir() if p.is_dir() and p.name.isdigit()),
-        key=lambda p: p.name,
-        reverse=True,
-    )
-    return runs[0] if runs else None
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-dir", type=Path, default=None, help="Run folder, e.g. data/1783020361")
+    parser.add_argument("--run-dir", type=Path, default=None, help="Run folder, e.g. data/2026_07_15_1783020361")
     parser.add_argument("--ppg-csv", type=Path, default=None)
     parser.add_argument("--eda-csv", type=Path, default=None)
     parser.add_argument("--output-csv", type=Path, default=None)

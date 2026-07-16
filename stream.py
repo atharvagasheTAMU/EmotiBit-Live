@@ -12,6 +12,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+from run_utils import build_run_folder_name
 from signal_utils import FEATURE_COLUMNS, extract_window_features
 
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -64,7 +65,8 @@ def main() -> None:
     proc_cfg = cfg["processing"]
 
     data_dir = Path(stream_cfg.get("data_dir", "data"))
-    run_id = str(int(time.time()))
+    unix_ts = int(time.time())
+    run_id = build_run_folder_name(unix_ts, stream_cfg.get("run_tag", "") or "")
     run_dir = data_dir / run_id
     raw_dir = run_dir / "raw"
     processed_dir = run_dir / "processed"
