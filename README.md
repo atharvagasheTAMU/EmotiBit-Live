@@ -3,6 +3,21 @@
 This guide explains how to record and process EmotiBit biosignal data using this toolkit. The data can be streamed live or it can be replayed from a recorded session from the oscilloscope using the raw csv file.
 **What you'll get at the end of a session:** a folder containing your raw sensor data (CSV files you can open in Excel) and proecssed data containing various metrics such as ibi, hr, etc.
 
+### Project files
+
+| File | Purpose |
+|---|---|
+| `config.yaml` | All settings |
+| `stream_timesync.py` | **Default** live listener, device/recording-aligned timestamps |
+| `stream.py` | Simpler alternative live listener, computer-clock timestamps |
+| `replay.py` | Replays a raw CSV over the network for testing |
+| `process_offline.py` | Recalculates features from saved raw data |
+| `plot_streams.py` | Generates HR/BI chart images |
+| `signal_utils.py` | Signal-processing math (filters, feature extraction) |
+| `run_utils.py` | Recording-folder naming/discovery |
+| `timesync.py` | RD/TL/AK timestamp alignment logic |
+
+
 ---
 
 ## 1. What this toolkit does
@@ -118,10 +133,10 @@ Use this when a participant is wearing the EmotiBit and you want to record real 
 ### Before you start
 
 - [ ] The EmotiBit is charged, powered on, and worn correctly
-- [ ] The EmotiBit app/device is set to send data to your computer (port `12346`, same as `config.yaml`)
+- [ ] Turn on UDP on Oscilloscope. (Click on Output List in the Top Right Corner -> Check UDP)
+- [ ] Oscilloscope is set to send data to your port (port `12346`, same as `config.yaml`. This is the default port. No Need to change anything)
 - [ ] Your computer and the EmotiBit are on the same Wi-Fi network
 - [ ] You've set `run_tag` in `config.yaml` if you want a labeled folder (Section 3.1)
-- [ ] You've set `recording_timezone` in `config.yaml` to match where you're recording (Section 3.4)
 
 ### Steps
 
@@ -163,7 +178,7 @@ Everything is saved automatically in the folder printed in step 3 (inside the `d
 
 Use this to test your setup, practice the workflow, or debug problems — no EmotiBit hardware needed. You "replay" an existing recording file as if it were live data.
 
-You'll need **two terminal windows** open at the same time, both in the project folder.
+You'll need **two terminal windows** open at the same time, both in the project folder. First click on Terminal in the top left of the IDE. Click on New Terminal to start the terminal.Next, click again on Terminal and then click on Split Terminal. Two terminals will open at the bottom of the IDE.
 
 ### Steps
 
@@ -316,17 +331,4 @@ Both `processed_data_live.csv` and `processed_data.csv` contain:
 
 `time`, `unix time`, `lf/hf`, `lf`, `hf`, `ibi mean`, `ibi stdev`, `hr`, `bvp amplitude`, `scr recovery time`, `scr peaks`, `scr rise time`, `scl mean`, `scl stdev`
 
-### A.5 Project files
-
-| File | Purpose |
-|---|---|
-| `config.yaml` | All settings |
-| `stream_timesync.py` | **Default** live listener, device/recording-aligned timestamps |
-| `stream.py` | Simpler alternative live listener, computer-clock timestamps |
-| `replay.py` | Replays a raw CSV over the network for testing |
-| `process_offline.py` | Recalculates features from saved raw data |
-| `plot_streams.py` | Generates HR/BI chart images |
-| `signal_utils.py` | Signal-processing math (filters, feature extraction) |
-| `run_utils.py` | Recording-folder naming/discovery |
-| `timesync.py` | RD/TL/AK timestamp alignment logic |
 
