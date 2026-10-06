@@ -24,6 +24,7 @@ FEATURE_COLUMNS = [
     "scr recovery time",
     "scr peaks",
     "scr rise time",
+    "scr no peaks",
     "scl mean",
     "scl stdev",
 ]
@@ -61,16 +62,17 @@ def find_SCL(signal):
 def find_SCR(signal, sample_rate):
     peaks = peaks_SCR(signal)
     if peaks.size == 0:
-        return -1, -1, -1
+        return -1, -1, -1, 0
 
     peaks, peak_heights, rise_lengths, half_lengths, _, _ = SCR_feats(signal, peaks, sample_rate)
     if peaks.size == 0:
-        return -1, -1, -1
+        return -1, -1, -1, 0
 
+    scr_count = peaks.size
     rise_times = np.average(rise_lengths / sample_rate) if rise_lengths.size else -1
     half_times = np.average(half_lengths / sample_rate) if half_lengths.size else -1
     peak_heights = np.average(peak_heights) if peak_heights.size else -1
-    return half_times, peak_heights, rise_times
+    return half_times, peak_heights, rise_times, scr_count
 
 
 def peaks_SCR(signal, threshold=0.25, range=20):
@@ -291,7 +293,8 @@ def extract_ppg_metrics(signal, sample_rate):
 
 def find_LH(ibi, peaks, sample_rate):
     signal = []
-    for i, peak in enumerate(peaks):
+    for i in range(len(ibi)):
+        peak = peaks[i]
         ibis = [ibi[i]] * (peak if i == 0 else peak - peaks[i - 1])
         signal.append(ibis)
     signal = [item for sublist in signal for item in sublist]
@@ -385,7 +388,7 @@ def extract_window_features(
     #     visualize_EDA(scr_values, scl_values, eda_sr)
 
     ppg_metrics = extract_ppg_metrics(ppg_values, ppg_sr)
-    scr_rec, scr_amp, scr_rise = find_SCR(scr_values, eda_sr)
+    scr_rec, scr_amp, scr_rise, scr_count = find_SCR(scr_values, eda_sr)
     scl_mean, scl_stdev = find_SCL(scl_values)
 
     return {
@@ -400,6 +403,7 @@ def extract_window_features(
         "scr recovery time": scr_rec,
         "scr peaks": scr_amp,
         "scr rise time": scr_rise,
+        "scr no peaks": scr_count,
         "scl mean": scl_mean,
         "scl stdev": scl_stdev,
     }

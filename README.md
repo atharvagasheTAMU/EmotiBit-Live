@@ -329,6 +329,6 @@ When deciding which files to read/write, the script checks, in order:
 
 Both `processed_data_live.csv` and `processed_data.csv` contain:
 
-`time`, `unix time`, `lf/hf`, `lf`, `hf`, `ibi mean`, `ibi stdev`, `hr`, `bvp amplitude`, `scr recovery time`, `scr peaks`, `scr rise time`, `scl mean`, `scl stdev`
+`time`, `unix time`, `lf/hf`, `lf`, `hf`, `ibi mean`, `ibi stdev`, `hr`, `bvp amplitude`, `scr recovery time`, `scr peaks`, `scr rise time`, `scr no peaks`, `scl mean`, `scl stdev`
 
 
